@@ -8,9 +8,6 @@
     "generate": "pbjs -t static-module -w commonjs -o types.js ../../proto/root.proto && pbts -o types.d.ts types.js",
     "copy": "cp -R build/. ../../client-js-artifact && cp types* package.json ../../client-js-artifact && cp -R ../../proto ../../client-js-artifact"
   },
-  "dependencies": {
-    "protobufjs": "^6.10.1"
-  },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",
     "@neutrinojs/airbnb-base": "^9.4.0",
@@ -23,6 +20,7 @@
     "jest": "^26",
     "lodash": "^4.17.20",
     "neutrino": "^9.4.0",
+    "protobufjs": "^6.10.1",
     "typescript": "^4.0.3",
     "webpack": "^4",
     "webpack-cli": "^3"
