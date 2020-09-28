@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc && yarn generate && yarn copy",
     "generate": "pbjs -t static-module -w commonjs -o types.js ../../proto/root.proto && pbts -o types.d.ts types.js",
-    "copy": "cp -R build/. ../../client-js-artifact && cp types* package.json ../../client-js-artifact && cp -R ../../proto ../../client-js-artifact"
+    "copy": "cp -R build/. ../../client-js-artifact && cp types* package.json ../../client-js-artifact && cp -R ../../proto ../../client-js-artifact",
+    "lint": "eslint --format codeframe --ext mjs,jsx,js,ts,tsx src"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",
