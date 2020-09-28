@@ -67,4 +67,8 @@ jobs:
         run: yarn publish --new-version "${{ steps.bump_version.outputs.version }}" --access restricted
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete old packages
+        uses: actions/delete-package-versions@v1
+        with:
+          package-name: 'grpc'
         
