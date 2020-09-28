@@ -2,6 +2,20 @@
 
 This is a project that handles communication between services using gRPC. It includes proto buffers and clients.
 
+## Directory structure
+
+The folder structure is as follows:
+
+```
+/proto                  # place for proto files
+  root.proto            # root file that imports all proto files
+  /SecretManager
+    secret.proto
+    root.proto
+/client                 # place for clients
+  /js                   # JS client
+```
+
 ## Proto buffers
 
 Proto files are stored in `/proto` directory in a following structure:
