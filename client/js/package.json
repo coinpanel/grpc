@@ -1,0 +1,30 @@
+{
+  "name": "grpc2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && yarn generate && yarn copy",
+    "generate": "pbjs -t static-module -w commonjs -o types.js ../../proto/root.proto && pbts -o types.d.ts types.js",
+    "copy": "cp -R build/. ../../client-js-artifact && cp types* package.json ../../client-js-artifact && cp -R ../../proto ../../client-js-artifact"
+  },
+  "dependencies": {
+    "protobufjs": "^6.10.1"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.10.4",
+    "@neutrinojs/airbnb-base": "^9.4.0",
+    "@neutrinojs/jest": "^9.4.0",
+    "@neutrinojs/library": "^9.4.0",
+    "@neutrinojs/node": "^9.4.0",
+    "@types/lodash": "^4.14.161",
+    "eslint": "^7",
+    "fork-ts-checker-webpack-plugin": "^5.2.0",
+    "jest": "^26",
+    "lodash": "^4.17.20",
+    "neutrino": "^9.4.0",
+    "typescript": "^4.0.3",
+    "webpack": "^4",
+    "webpack-cli": "^3"
+  }
+}
