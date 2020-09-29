@@ -20,9 +20,28 @@ runs:
   steps: 
     # - run: cp -R ${{ inputs.proto-path }} ./proto
     #   shell: bash
+    - run: mkdir .js-client
+      shell: bash
+    - run: cp -R ${{ github.action_path }}/. .js-client
+      shell: bash
+    - run: cp -R ${{ inputs.proto-path }}/. .js-client/proto
+      shell: bash
+    - run: ls .js-client
+      shell: bash
+    - run: yarn
+      shell: bash
+      working-directory: .js-client/client/js
     - run: yarn build
       shell: bash
-      working-directory: client/js
-      env: 
-        ROOT_PROTO_FILENAME: ${{ inputs.root-proto-filename }}
-        PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
+      working-directory: .js-client/client/js
+    - run: ls
+      shell: bash
+      working-directory: .js-client
+    - run: ls ${{ github.action_path }}
+      shell: bash
+    # - run: yarn build
+    #   shell: bash
+    #   working-directory: client/js
+    #   env: 
+    #     ROOT_PROTO_FILENAME: ${{ inputs.root-proto-filename }}
+    #     PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
