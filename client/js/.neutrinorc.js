@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const airbnbBase = require('@neutrinojs/airbnb-base');
 const library = require('@neutrinojs/library');
 const jest = require('@neutrinojs/jest');
@@ -10,6 +11,12 @@ module.exports = {
   },
   use: [
     airbnbBase(),
+    library({
+      name: 'grpc',
+      babel: {
+        presets: ['@babel/typescript'],
+      },
+    }),
     jest(),
     neutrino => {
       // tsc and tslint checks
@@ -17,6 +24,14 @@ module.exports = {
       neutrino.config.resolve.extensions.add('.tsx');
       neutrino.config.resolve.extensions.add('.ts');
       neutrino.config.module.rule('compile').test(/\.(wasm|mjs|jsx|js|tsx|ts)$/);
+
+      neutrino.config.plugin('env')
+        .use(webpack.DefinePlugin, [{
+          'process.env': JSON.stringify({
+            ROOT_PROTO_FILENAME: process.env.ROOT_PROTO_FILENAME,
+            PROTO_PACKAGE_NAME: process.env.PROTO_PACKAGE_NAME,
+          })
+        }]);
     }
   ],
 };

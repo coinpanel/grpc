@@ -15,22 +15,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: ./
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm install -g yarn
-      - run: yarn install
-        working-directory: client/js
-      - run: yarn lint
-        working-directory: client/js
-      - run: yarn build
-        working-directory: client/js
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: client-js-artifact
-          path: client-js-artifact
+          proto-path: ./proto
+          proto-package-name: SecretManager
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
+      # - run: npm install -g yarn
+      # - run: yarn install
+      #   working-directory: client/js
+      # - run: yarn lint
+      #   working-directory: client/js
+      # - run: yarn build
+      #   working-directory: client/js
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: client-js-artifact
+      #     path: client-js-artifact
 
   publish_js_client:
     runs-on: ubuntu-latest
