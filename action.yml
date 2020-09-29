@@ -11,37 +11,71 @@ inputs:
   proto-package-name:
     description: 'Package of the root proto file'
     required: true
-# outputs:
-#   random-number: 
-#     description: "Random number"
-#     value: ${{ steps.random-number-generator.outputs.random-id }}
+  npm-package-name:
+    description: 'Package name on the npm registry'
+    required: true
+  npm-package-version:
+    description: 'Version of the npm package'
+    required: true
+  npm-auth-token:
+    description: 'Auth token to the npm registry'
+    required: true
+outputs:
+  artifact-path: 
+    description: "Generated artifact path"
+    value: ${{ steps.path-generator.outputs.artifact-path }}
+  published-versions-number: 
+    description: "Number of published versions"
+    value: ${{ steps.published-versions-number.outputs.number }}
 runs:
   using: "composite"
   steps: 
-    # - run: cp -R ${{ inputs.proto-path }} ./proto
-    #   shell: bash
     - run: mkdir .js-client
-      shell: bash
-    - run: cp -R ${{ github.action_path }}/. .js-client
-      shell: bash
-    - run: cp -R ${{ inputs.proto-path }}/. .js-client/proto
-      shell: bash
-    - run: ls .js-client
-      shell: bash
+      shell: sh
+    
+    - run: |
+        cp -R ${{ github.action_path }}/. .js-client
+        cp -R ${{ inputs.proto-path }}/. .js-client/proto
+      shell: sh
+    
     - run: yarn
-      shell: bash
+      shell: sh
       working-directory: .js-client/client/js
+
     - run: yarn build
-      shell: bash
+      shell: sh
       working-directory: .js-client/client/js
-    - run: ls
-      shell: bash
-      working-directory: .js-client
-    - run: ls ${{ github.action_path }}
-      shell: bash
-    # - run: yarn build
-    #   shell: bash
-    #   working-directory: client/js
-    #   env: 
-    #     ROOT_PROTO_FILENAME: ${{ inputs.root-proto-filename }}
-    #     PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
+      env: 
+        ROOT_PROTO_FILENAME: ${{ inputs.root-proto-filename }}
+        PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
+        NPM_PACKAGE_NAME: ${{ inputs.npm-package-name }}
+
+    - id: path-generator
+      run: echo "::set-output name=artifact-path::.js-client/client-js-artifact"
+      shell: sh
+
+    - run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ inputs.npm-auth-token }}" > ~/.npmrc
+        npm config set registry 'https://npm.pkg.github.com/'
+        npm config set always-auth true
+      shell: sh
+
+    - run: |
+        git config --global user.email "bot@coinpanel.com"
+        git config --global user.name "CoinPanel bot"
+      shell: sh
+
+    - run: yarn publish --new-version "${{ inputs.npm-package-version }}" --access restricted
+      working-directory: .js-client/client/js
+      shell: sh
+
+    - run: yarn info @coinpanel/gh-action-test versions --json
+      shell: sh
+
+    - id: published-versions-number
+      run: echo "::set-output name=number::$(yarn info @coinpanel/gh-action-test versions --json | jq -r '.data | length')"
+      shell: sh
+
+    # Clean up
+    - run: rm -rf .js-client
+      shell: sh
