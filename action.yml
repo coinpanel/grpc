@@ -21,9 +21,6 @@ inputs:
     description: 'Auth token to the npm registry'
     required: true
 outputs:
-  artifact-path: 
-    description: "Generated artifact path"
-    value: ${{ steps.path-generator.outputs.artifact-path }}
   published-versions-number: 
     description: "Number of published versions"
     value: ${{ steps.published-versions-number.outputs.number }}
@@ -50,10 +47,6 @@ runs:
         PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
         NPM_PACKAGE_NAME: ${{ inputs.npm-package-name }}
 
-    - id: path-generator
-      run: echo "::set-output name=artifact-path::.js-client/client-js-artifact"
-      shell: sh
-
     - run: |
         echo "//npm.pkg.github.com/:_authToken=${{ inputs.npm-auth-token }}" > ~/.npmrc
         npm config set registry 'https://npm.pkg.github.com/'
@@ -65,11 +58,12 @@ runs:
         git config --global user.name "CoinPanel bot"
       shell: sh
 
-    - run: yarn publish --new-version "${{ inputs.npm-package-version }}" --access restricted
+    - run: cp -R client-js-artifact/. artifact
       working-directory: .js-client
       shell: sh
 
-    - run: yarn info @coinpanel/gh-action-test versions --json
+    - run: yarn publish --new-version "${{ inputs.npm-package-version }}" --access restricted
+      working-directory: .js-client/artifact
       shell: sh
 
     - id: published-versions-number
