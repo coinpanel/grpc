@@ -16,6 +16,7 @@ module.exports = {
       babel: {
         presets: ['@babel/typescript'],
       },
+      target: 'node',
     }),
     jest(),
     neutrino => {
