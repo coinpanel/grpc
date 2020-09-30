@@ -8,7 +8,7 @@ This is a GitHub action that builds gRPC client for JS and publishes it to the p
     Path to directory with .proto files   
     required: true
   - `root-proto-filename`  
-    Name of the root proto file inside the proto-path  
+    Name of the root proto file inside the proto-path (relative to the proto-path, must be inside the proto-path directory)  
     required: false  
     default: `root.proto`
   - `proto-package-name`  
@@ -61,6 +61,7 @@ jobs:
         with:
           proto-path: ./pb # path to the directory that stores proto files (it will be copied to the client)
           proto-package-name: SecretManager # package name from proto files
+          root-proto-filename: root.proto # path to the proto file that imports all necessary protos (relative to the proto-path)
           npm-package-name: '@coinpanel/${{ github.event.repository.name }}' # name upon which the package is published
           npm-package-version: ${{ steps.bump_version.outputs.version }} # version upon which the package is published
           npm-auth-token: ${{ secrets.GITHUB_TOKEN }} # token for npm registry authentication
