@@ -73,3 +73,6 @@ runs:
     # Clean up
     - run: rm -rf .js-client
       shell: sh
+
+    - run: echo Package ${{ inputs.npm-package-name }} published succesfully
+      shell: sh
