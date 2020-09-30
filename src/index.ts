@@ -13,3 +13,5 @@ export const getServiceConfig = (): ServiceConfig => {
     protoPath,
   };
 };
+
+export default { getServiceConfig };
