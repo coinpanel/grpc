@@ -40,11 +40,11 @@ runs:
     
     - run: yarn
       shell: sh
-      working-directory: .js-client/client/js
+      working-directory: .js-client
 
     - run: yarn build
       shell: sh
-      working-directory: .js-client/client/js
+      working-directory: .js-client
       env: 
         ROOT_PROTO_FILENAME: ${{ inputs.root-proto-filename }}
         PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
@@ -66,7 +66,7 @@ runs:
       shell: sh
 
     - run: yarn publish --new-version "${{ inputs.npm-package-version }}" --access restricted
-      working-directory: .js-client/client/js
+      working-directory: .js-client
       shell: sh
 
     - run: yarn info @coinpanel/gh-action-test versions --json

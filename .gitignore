@@ -1,5 +1,5 @@
-client/js/build
-client/js/node_modules
-client/js/types*
+build
+node_modules
+types*
 
 client-js-artifact
