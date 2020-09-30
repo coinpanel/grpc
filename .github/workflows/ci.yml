@@ -15,67 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
-        with:
-          proto-path: ./proto
-          proto-package-name: SecretManager
-      # - name: Use Node.js ${{ matrix.node-version }}
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: ${{ matrix.node-version }}
-      # - run: npm install -g yarn
-      # - run: yarn install
-      #   working-directory: client/js
-      # - run: yarn lint
-      #   working-directory: client/js
-      # - run: yarn build
-      #   working-directory: client/js
-      # - name: Upload build artifacts
-      #   uses: actions/upload-artifact@master
-      #   with:
-      #     name: client-js-artifact
-      #     path: client-js-artifact
-
-  publish_js_client:
-    runs-on: ubuntu-latest
-    needs: build_js_client
-    if: github.ref == 'refs/heads/master'
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download build artifacts
-        uses: actions/download-artifact@master
-        with:
-          name: client-js-artifact
-          path: client-js-publish
-      - name: Bump version
-        id: bump_version
-        uses: zwaldowski/semver-release-action@v1
-        with:
-          bump: patch
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://npm.pkg.github.com'
-          always-auth: true
-          scope: "@coinpanel"
-      - name: Configure git credentials
-        run: |
-          git config --global user.email "bot@coinpanel.com"
-          git config --global user.name "CoinPanel bot"
-      - name: Publish
-        working-directory: client-js-publish
-        run: yarn publish --new-version "${{ steps.bump_version.outputs.version }}" --access restricted
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Delete old packages
-        uses: actions/delete-package-versions@v1
-        with:
-          package-name: 'grpc'
-        
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn build
