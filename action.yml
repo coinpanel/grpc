@@ -6,7 +6,7 @@ inputs:
     required: true
   root-proto-filename:
     description: 'Name of the root proto file inside the proto-path'
-    required: true
+    required: false
     default: 'root.proto'
   proto-package-name:
     description: 'Package of the root proto file'
