@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node setName && webpack --mode production && tsc --emitDeclarationOnly && yarn generate && yarn copy",
-    "generate": "pbjs -t static-module -w commonjs -o types.js ../../proto/root.proto && pbts -o types.d.ts types.js",
+    "generate": "./scripts/generate.sh",
     "copy": "cp -R build/. ./client-js-artifact && cp types* package.json ./client-js-artifact && cp -R ./proto ./client-js-artifact",
     "lint": "eslint --format codeframe --ext mjs,jsx,js,ts,tsx src"
   },
