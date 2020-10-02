@@ -67,7 +67,7 @@ runs:
       shell: sh
 
     - id: published-versions-number
-      run: echo "::set-output name=number::$(yarn info @coinpanel/gh-action-test versions --json | jq -r '.data | length')"
+      run: echo "::set-output name=number::$(yarn info ${{ inputs.npm-package-name }} versions --json | jq -r '.data | length')"
       shell: sh
 
     # Clean up
