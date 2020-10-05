@@ -63,6 +63,10 @@ runs:
       working-directory: .js-client/artifact
       shell: sh
 
+    - run: sed -i 's/Promise/Observable/g' types.d.ts && sed -i '1i import { Observable } from "rxjs";' types.d.ts
+      working-directory: .js-client/artifact
+      shell: sh
+
     - run: yarn publish --access restricted
       working-directory: .js-client/artifact
       shell: sh
