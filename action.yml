@@ -14,9 +14,6 @@ inputs:
   npm-package-name:
     description: 'Package name on the npm registry'
     required: true
-  npm-package-version:
-    description: 'Version of the npm package'
-    required: true
   npm-auth-token:
     description: 'Auth token to the npm registry'
     required: true
@@ -62,7 +59,11 @@ runs:
       working-directory: .js-client
       shell: sh
 
-    - run: yarn publish --new-version "${{ inputs.npm-package-version }}" --access restricted
+    - run: echo "${GITHUB_SHA}" > VERSION
+      working-directory: .js-client/artifact
+      shell: sh
+
+    - run: yarn publish --access restricted
       working-directory: .js-client/artifact
       shell: sh
 
