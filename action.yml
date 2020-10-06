@@ -1,0 +1,83 @@
+name: 'gRPC client for JS builder'
+description: 'Build gRPC client for JS'
+inputs:
+  proto-path:
+    description: 'Path to directory with .proto files'
+    required: true
+  root-proto-filename:
+    description: 'Name of the root proto file inside the proto-path'
+    required: false
+    default: 'root.proto'
+  proto-package-name:
+    description: 'Package of the root proto file'
+    required: true
+  npm-package-name:
+    description: 'Package name on the npm registry'
+    required: true
+  npm-auth-token:
+    description: 'Auth token to the npm registry'
+    required: true
+outputs:
+  published-versions-number: 
+    description: "Number of published versions"
+    value: ${{ steps.published-versions-number.outputs.number }}
+runs:
+  using: "composite"
+  steps: 
+    - run: mkdir .js-client
+      shell: sh
+    
+    - run: |
+        cp -R ${{ github.action_path }}/. .js-client
+        cp -R ${{ inputs.proto-path }}/. .js-client/proto
+      shell: sh
+    
+    - run: yarn
+      shell: sh
+      working-directory: .js-client
+
+    - run: yarn build
+      shell: sh
+      working-directory: .js-client
+      env: 
+        ROOT_PROTO_FILENAME: ${{ inputs.root-proto-filename }}
+        PROTO_PACKAGE_NAME: ${{ inputs.proto-package-name }}
+        NPM_PACKAGE_NAME: ${{ inputs.npm-package-name }}
+
+    - run: |
+        echo "//npm.pkg.github.com/:_authToken=${{ inputs.npm-auth-token }}" > ~/.npmrc
+        npm config set registry 'https://npm.pkg.github.com/'
+        npm config set always-auth true
+      shell: sh
+
+    - run: |
+        git config --global user.email "bot@coinpanel.com"
+        git config --global user.name "CoinPanel bot"
+      shell: sh
+
+    - run: cp -R client-js-artifact/. artifact
+      working-directory: .js-client
+      shell: sh
+
+    - run: echo "${GITHUB_SHA}" > VERSION
+      working-directory: .js-client/artifact
+      shell: sh
+
+    - run: sed -i 's/Promise/Observable/g' types.d.ts && sed -i '1i import { Observable } from "rxjs";' types.d.ts
+      working-directory: .js-client/artifact
+      shell: sh
+
+    - run: yarn publish --patch --access restricted
+      working-directory: .js-client/artifact
+      shell: sh
+
+    - id: published-versions-number
+      run: echo "::set-output name=number::$(yarn info ${{ inputs.npm-package-name }} versions --json | jq -r '.data | length')"
+      shell: sh
+
+    # Clean up
+    - run: rm -rf .js-client
+      shell: sh
+
+    - run: echo Package ${{ inputs.npm-package-name }} published succesfully
+      shell: sh
