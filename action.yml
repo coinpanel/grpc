@@ -67,7 +67,7 @@ runs:
       working-directory: .js-client/artifact
       shell: sh
 
-    - run: yarn publish --access restricted
+    - run: yarn publish --patch --access restricted
       working-directory: .js-client/artifact
       shell: sh
 
