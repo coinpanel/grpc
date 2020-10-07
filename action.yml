@@ -67,7 +67,8 @@ runs:
       working-directory: .js-client/artifact
       shell: sh
 
-    - run: yarn publish --patch --access restricted
+    # Fetch latest remote version && publish new version
+    - run: yarn version --new-version "`npm show ${{ inputs.npm-package-name }} || echo '0.0.1'`" && yarn publish --patch --access restricted
       working-directory: .js-client/artifact
       shell: sh
 
